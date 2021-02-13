@@ -1,7 +1,8 @@
 import * as vscode from 'vscode';
 import { TestAdapter, TestLoadStartedEvent, TestLoadFinishedEvent, TestRunStartedEvent, TestRunFinishedEvent, TestSuiteEvent, TestEvent } from 'vscode-test-adapter-api';
 import { Log } from 'vscode-test-adapter-util';
-import { loadFakeTests, runFakeTests } from './fakeTests';
+import { runFakeTests } from './fakeTests';
+import { loadZigTests } from './zigTests';
 
 /**
  * This class is intended as a starting point for implementing a "real" TestAdapter.
@@ -38,7 +39,8 @@ export class ExampleAdapter implements TestAdapter {
 
 		this.testsEmitter.fire(<TestLoadStartedEvent>{ type: 'started' });
 
-		const loadedTests = await loadFakeTests();
+		// const loadedTests = await loadFakeTests();
+		const loadedTests = await loadZigTests(this.workspace);
 
 		this.testsEmitter.fire(<TestLoadFinishedEvent>{ type: 'finished', suite: loadedTests });
 
@@ -57,11 +59,11 @@ export class ExampleAdapter implements TestAdapter {
 
 	}
 
-/*	implement this method if your TestAdapter supports debugging tests
-	async debug(tests: string[]): Promise<void> {
-		// start a test run in a child process and attach the debugger to it...
-	}
-*/
+	/*	implement this method if your TestAdapter supports debugging tests
+		async debug(tests: string[]): Promise<void> {
+			// start a test run in a child process and attach the debugger to it...
+		}
+	*/
 
 	cancel(): void {
 		// in a "real" TestAdapter this would kill the child process for the current test run (if there is any)
